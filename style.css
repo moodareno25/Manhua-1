@@ -52,36 +52,33 @@ button:active {
     background-color: #ff6b81;
 }
 
-/* التنسيق الجديد لخانة الروابط المتقدمة */
-.input-area-advanced {
+.input-area {
     margin-top: 8px;
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    justify-content: center;
     gap: 5px;
-    padding: 0 15px;
+    padding: 0 10px;
 }
 
-.input-area-advanced textarea {
-    width: 90%;
+.input-area input {
+    width: 70%;
     background-color: #2e2e2e;
     border: 1px solid #444;
     color: white;
-    padding: 8px;
+    padding: 6px 10px;
     border-radius: 5px;
     font-size: 0.8rem;
-    resize: none;
 }
 
-.input-area-advanced button {
-    width: 94%;
+.input-area button {
+    width: 23%;
     padding: 6px;
     background-color: #2ed573;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
 }
 
 .viewer-container {
-    margin-top: 170px; /* زيادة المسافة لتناسب الصندوق الجديد */
+    margin-top: 140px; 
     margin-bottom: 70px;
     width: 100%;
     display: flex;
@@ -90,17 +87,9 @@ button:active {
 }
 
 .viewer-container img {
-    width: 100%;
+    width: 100%; /* ملء الأفقي تماماً للجوال */
     height: auto;
     display: block;
-}
-
-.notice {
-    color: #888;
-    text-align: center;
-    margin: 50px 20px;
-    font-size: 0.9rem;
-    line-height: 1.5;
 }
 
 .bottom-panel {
