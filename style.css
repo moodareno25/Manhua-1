@@ -1,0 +1,124 @@
+/* إعدادات عامة مريحة للعين */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #121212;
+    color: #ffffff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* الشريط العلوي */
+.control-panel {
+    width: 100%;
+    background-color: #1e1e1e;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    text-align: center;
+    padding: 10px 0;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+
+#manga-title {
+    margin: 5px 0;
+    font-size: 1.1rem;
+    color: #e0e0e0;
+}
+
+/* حاوية الأزرار */
+.buttons-container {
+    display: flex;
+    justify-content: space-around;
+    padding: 5px 10px;
+}
+
+button {
+    background-color: #ff4757;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    transition: background 0.2s;
+    width: 45%; /* لتناسب أصابع اليد على الجوال */
+}
+
+button:active {
+    background-color: #ff6b81;
+}
+
+/* خانة إدخال الرابط */
+.input-area {
+    margin-top: 8px;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    padding: 0 10px;
+}
+
+.input-area input {
+    width: 70%;
+    background-color: #2e2e2e;
+    border: 1px solid #444;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8rem;
+}
+
+.input-area button {
+    width: 25%;
+    padding: 5px;
+    background-color: #2ed573;
+    font-size: 0.8rem;
+}
+
+/* حاوية الصور المانجا الأساسية */
+.viewer-container {
+    margin-top: 130px; /* مسافة لكي لا تغطي الأزرار العلوية أول الصور */
+    margin-bottom: 70px; /* مسافة للأزرار السفلية */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* تنسيق الصور لتكون كاملة العرض وعمودية */
+.viewer-container img {
+    width: 100%; /* ملء الأفقي تماماً */
+    height: auto; /* الحفاظ على أبعاد الصورة الأصلية */
+    display: block; /* منع الفراغات بين الصور */
+    loading: lazy; /* تسريع التحميل الفصول */
+}
+
+.notice {
+    color: #888;
+    text-align: center;
+    margin-top: 50px;
+}
+
+/* الشريط السفلي */
+.bottom-panel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #1e1e1e;
+    padding: 10px 0;
+    display: flex;
+    justify-content: space-around;
+    box-shadow: 0 -4px 10px rgba(0,0,0,0.5);
+    z-index: 100;
+}
+
+.bottom-panel button {
+    width: 45%;
+}
