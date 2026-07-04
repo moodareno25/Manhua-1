@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قارئ المانهوا الذكي</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- شريط التحكم العلوي -->
+    <header class="control-panel">
+        <h2 id="manga-title">Spirit farmer - الفصل 1</h2>
+        
+        <div class="buttons-container">
+            <button id="prev-btn" onclick="changeChapter(-1)">◀ السابق</button>
+            <button id="next-btn" onclick="changeChapter(1)">التالي ▶</button>
+        </div>
+
+        <!-- خانة لتعديل الرابط يدوياً عند الحاجة -->
+        <div class="input-area">
+            <input type="text" id="url-input" value="https://manga-starz.net/manga/spirit-farmer/1/" placeholder="أدخل رابط الفصل هنا">
+            <button onclick="loadNewBaseUrl()">تحديث</button>
+        </div>
+    </header>
+
+    <!-- حاوية عرض صور المانهوا -->
+    <main class="viewer-container" id="images-container">
+        <!-- الصور ستظهر هنا تلقائياً عبر الجافاسكريبت -->
+        <p class="notice">اضغط "تحديث" أو تنقل بين الفصول لتحميل الصور.</p>
+    </main>
+
+    <!-- شريط تحكم سفلي لتسهيل الانتقال أثناء التصفح -->
+    <footer class="bottom-panel">
+        <button onclick="changeChapter(-1)">◀ السابق</button>
+        <button onclick="changeChapter(1)">التالي ▶</button>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
