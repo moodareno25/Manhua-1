@@ -8,6 +8,7 @@
 </head>
 <body>
 
+    <!-- شريط التحكم العلوي -->
     <header class="control-panel">
         <h2 id="manga-title">Spirit Farmer - الفصل 1</h2>
         
@@ -16,16 +17,19 @@
             <button id="next-btn" onclick="changeChapter(1)">التالي ▶</button>
         </div>
 
-        <div class="input-area-advanced">
-            <textarea id="images-urls" placeholder="أصق روابط صور الفصل هنا (كل رابط في سطر)..." rows="2"></textarea>
-            <button onclick="loadManualImages()">عرض الصور</button>
+        <!-- خانة الرابط المباشر كما أردتها -->
+        <div class="input-area">
+            <input type="text" id="url-input" value="https://manga-starz.net/manga/spirit-farmer/1/" placeholder="أدخل رابط الفصل هنا">
+            <button onclick="loadNewBaseUrl()">تحديث</button>
         </div>
     </header>
 
+    <!-- حاوية عرض صور المانهوا كاملة العرض -->
     <main class="viewer-container" id="images-container">
-        <p class="notice">يرجى نسخ روابط الصور الخاصة بالفصل ولصقها في الصندوق العلوي، ثم اضغط "عرض الصور".</p>
+        <!-- الصور ستظهر هنا تلقائياً -->
     </main>
 
+    <!-- شريط تحكم سفلي -->
     <footer class="bottom-panel">
         <button onclick="changeChapter(-1)">◀ السابق</button>
         <button onclick="changeChapter(1)">التالي ▶</button>
