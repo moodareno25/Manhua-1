@@ -1,97 +1,77 @@
-// المتغيرات الافتراضية لقراءة الرابط واستخراج البيانات
-let currentUrl = "https://manga-starz.net/manga/spirit-farmer/1/";
-let mangaName = "Spirit farmer";
 let currentChapter = 1;
-let baseUrlWithoutChapter = "https://manga-starz.net/manga/spirit-farmer/";
+let mangaName = "Spirit Farmer";
+// كائن لحفظ روابط صور كل فصل بشكل مستقل لمنع ضياعها أثناء التنقل
+let chaptersData = {}; 
 
-// دالة لتفكيك الرابط ومعرفة اسم المانهوا ورقم الفصل الحالي
-function parseUrl(url) {
-    try {
-        // تنظيف الرابط من أي مسافات أو فواصل زائدة في النهاية
-        let cleanUrl = url.trim();
-        if (cleanUrl.endsWith('/')) {
-            cleanUrl = cleanUrl.slice(0, -1);
-        }
-
-        // استخراج الأجزاء المكونة للرابط
-        let parts = cleanUrl.split('/');
-        
-        // الرقم الأخير هو رقم الفصل
-        let chapter = parseInt(parts[parts.length - 1]);
-        
-        // الاسم يكون قبل رقم الفصل بجزءين (حسب هيكلة الرابط المذكور)
-        let nameAttr = parts[parts.length - 2];
-        // تحويل الاسم لشكل مقروء (استبدال الشرطات بمسافات وتكبير الحروف الأولى)
-        let formattedName = nameAttr.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-
-        if (!isNaN(chapter)) {
-            currentChapter = chapter;
-            mangaName = formattedName;
-            // إعادة بناء الرابط الأساسي بدون رقم الفصل
-            baseUrlWithoutChapter = cleanUrl.substring(0, cleanUrl.lastIndexOf('/')) + '/';
-            updateUI();
-        } else {
-            alert("تأكد من أن الرابط ينتهي برقم الفصل (مثال: /1/)");
-        }
-    } catch (e) {
-        alert("خطأ في قراءة الرابط، يرجى التأكد من الصيغة.");
-    }
-}
-
-// دالة لتحديث واجهة المستخدم (العنوان والرابط في الخانة)
 function updateUI() {
     document.getElementById("manga-title").innerText = `${mangaName} - الفصل ${currentChapter}`;
-    let newFullUrl = `${baseUrlWithoutChapter}${currentChapter}/`;
-    document.getElementById("url-input").value = newFullUrl;
     
-    // التمرير إلى أعلى الصفحة تلقائياً عند تغيير الفصل
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // استرجاع الروابط المخزنة لهذا الفصل إن وجدت
+    if (chaptersData[currentChapter]) {
+        document.getElementById("images-urls").value = chaptersData[currentChapter];
+        displayImages(chaptersData[currentChapter]);
+    } else {
+        document.getElementById("images-urls").value = "";
+        document.getElementById("images-container").innerHTML = '<p class="notice">الفصل الجديد فارغ. يرجى لصق روابط الصور الحقيقية هنا وضغط "عرض الصور".</p>';
+    }
 
-    // استدعاء دالة عرض الصور للفصل الجديد
-    loadImages();
+    // التمرير لأعلى الصفحة عند الانتقال
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// دالة تغيير رقم الفصل عند الضغط على التالي (+1) أو السابق (-1)
+// دالة لمعالجة وعرض الصور التي يلصقها المستخدم
+function loadManualImages() {
+    let rawUrls = document.getElementById("images-urls").value;
+    if (!rawUrls.trim()) {
+        alert("الرجاء لصق روابط صور أولاً!");
+        return;
+    }
+    // حفظ الروابط الحالية للفصل الحالي
+    chaptersData[currentChapter] = rawUrls;
+    displayImages(rawUrls);
+}
+
+// دالة البناء الفعلي للصور داخل الصفحة
+function displayImages(rawText) {
+    const container = document.getElementById("images-container");
+    container.innerHTML = ""; // تنظيف الواجهة
+
+    // تقسيم النص إلى روابط منفصلة بناءً على السطور
+    let urlsArray = rawText.split('\n');
+
+    urlsArray.forEach((url, index) => {
+        let cleanUrl = url.trim();
+        if (cleanUrl) {
+            let img = document.createElement("img");
+            img.src = cleanUrl;
+            img.alt = `صفحة ${index + 1}`;
+            
+            // معالجة الخطأ في حال كان الرابط محمي أو تالف
+            img.onerror = function() {
+                this.style.display = 'none'; // إخفاء الصورة المكسورة لتظل الشاشة نظيفة
+            };
+
+            container.appendChild(img);
+        }
+    });
+}
+
+// دالة أزرار التالي والسابق
 function changeChapter(direction) {
+    // حفظ الروابط المكتوبة حالياً قبل الانتقال لفصل آخر
+    let currentInput = document.getElementById("images-urls").value;
+    if (currentInput.trim()) {
+        chaptersData[currentChapter] = currentInput;
+    }
+
     currentChapter += direction;
     if (currentChapter < 1) {
-        currentChapter = 1; // منع النزول تحت الفصل 1
+        currentChapter = 1;
     }
     updateUI();
 }
 
-// دالة لتحديث الرابط يدويًا من الخانة النصية
-function loadNewBaseUrl() {
-    let inputUrl = document.getElementById("url-input").value;
-    parseUrl(inputUrl);
-}
-
-// دالة محاكاة تحميل الصور وعرضها
-function loadImages() {
-    const container = document.getElementById("images-container");
-    container.innerHTML = ""; // تنظيف الصور السابقة
-
-    /* 
-       تنبيه تقني: لأننا لا نملك سيرفر يتخطى حماية مواقع المانجا (CORS)، 
-       هنا نقوم بتوليد روابط افتراضية للصور بناءً على نمط سيرفرات المانجا الشائع.
-       إذا كان للموقع نمط صور ثابت، يمكننا وضعه هنا ليتم سحب الصور مباشرة.
-    */
-    
-    // كود تجريبي لعرض آلية العمل (توليد 10 صور كمثال للفصل الحالي)
-    for (let i = 1; i <= 10; i++) {
-        let img = document.createElement("img");
-        // هنا يتم وضع رابط السيرفر الفعلي للصور، كمثال:
-        img.src = `https://via.placeholder.com/800x1200/121212/ffffff?text=${mangaName}+-+Ch+${currentChapter}+-+Page+${i}`;
-        
-        // في حال توفرت الروابط الحقيقية المستقرة للموقع يتم تبديل السطر العلوي بـ:
-        // img.src = `رابط_سيرفر_الصور/${mangaName}/${currentChapter}/${i}.jpg`;
-
-        img.alt = `صفحة ${i}`;
-        container.appendChild(img);
-    }
-}
-
-// تشغيل الدالة لأول مرة عند فتح الصفحة بناءً على الرابط الافتراضي
+// تشغيل الواجهة المبدئية عند الفتح
 window.onload = function() {
-    parseUrl(currentUrl);
+    updateUI();
 };
