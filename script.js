@@ -1,77 +1,86 @@
-let currentChapter = 1;
+let currentUrl = "https://manga-starz.net/manga/spirit-farmer/1/";
 let mangaName = "Spirit Farmer";
-// كائن لحفظ روابط صور كل فصل بشكل مستقل لمنع ضياعها أثناء التنقل
-let chaptersData = {}; 
+let currentChapter = 1;
+let baseUrlWithoutChapter = "https://manga-starz.net/manga/spirit-farmer/";
 
+// دالة لتفكيك وفحص الرابط المدخل
+function parseUrl(url) {
+    if (!url) return;
+    
+    let cleanUrl = url.trim();
+    if (cleanUrl.endsWith('/')) {
+        cleanUrl = cleanUrl.slice(0, -1);
+    }
+
+    let parts = cleanUrl.split('/');
+    let chapter = parseInt(parts[parts.length - 1]);
+    
+    if (!isNaN(chapter)) {
+        currentChapter = chapter;
+        // استخراج الاسم من الرابط وتنسيقه
+        let nameAttr = parts[parts.length - 2];
+        mangaName = nameAttr.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        baseUrlWithoutChapter = cleanUrl.substring(0, cleanUrl.lastIndexOf('/')) + '/';
+        
+        updateUI();
+    } else {
+        // إذا كان هناك خلل في صيغة الرابط، نكتفي بإنشاء الواجهة بدون التسبب في إيقاف الصفحة
+        updateUI();
+    }
+}
+
+// تحديث النصوص والرابط في الواجهة
 function updateUI() {
     document.getElementById("manga-title").innerText = `${mangaName} - الفصل ${currentChapter}`;
+    let newFullUrl = `${baseUrlWithoutChapter}${currentChapter}/`;
+    document.getElementById("url-input").value = newFullUrl;
     
-    // استرجاع الروابط المخزنة لهذا الفصل إن وجدت
-    if (chaptersData[currentChapter]) {
-        document.getElementById("images-urls").value = chaptersData[currentChapter];
-        displayImages(chaptersData[currentChapter]);
-    } else {
-        document.getElementById("images-urls").value = "";
-        document.getElementById("images-container").innerHTML = '<p class="notice">الفصل الجديد فارغ. يرجى لصق روابط الصور الحقيقية هنا وضغط "عرض الصور".</p>';
-    }
-
-    // التمرير لأعلى الصفحة عند الانتقال
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    loadMangaImages();
 }
 
-// دالة لمعالجة وعرض الصور التي يلصقها المستخدم
-function loadManualImages() {
-    let rawUrls = document.getElementById("images-urls").value;
-    if (!rawUrls.trim()) {
-        alert("الرجاء لصق روابط صور أولاً!");
-        return;
-    }
-    // حفظ الروابط الحالية للفصل الحالي
-    chaptersData[currentChapter] = rawUrls;
-    displayImages(rawUrls);
-}
-
-// دالة البناء الفعلي للصور داخل الصفحة
-function displayImages(rawText) {
-    const container = document.getElementById("images-container");
-    container.innerHTML = ""; // تنظيف الواجهة
-
-    // تقسيم النص إلى روابط منفصلة بناءً على السطور
-    let urlsArray = rawText.split('\n');
-
-    urlsArray.forEach((url, index) => {
-        let cleanUrl = url.trim();
-        if (cleanUrl) {
-            let img = document.createElement("img");
-            img.src = cleanUrl;
-            img.alt = `صفحة ${index + 1}`;
-            
-            // معالجة الخطأ في حال كان الرابط محمي أو تالف
-            img.onerror = function() {
-                this.style.display = 'none'; // إخفاء الصورة المكسورة لتظل الشاشة نظيفة
-            };
-
-            container.appendChild(img);
-        }
-    });
-}
-
-// دالة أزرار التالي والسابق
+// دالة أزرار التالي والسابق لتغيير الرقم في آخر الرابط
 function changeChapter(direction) {
-    // حفظ الروابط المكتوبة حالياً قبل الانتقال لفصل آخر
-    let currentInput = document.getElementById("images-urls").value;
-    if (currentInput.trim()) {
-        chaptersData[currentChapter] = currentInput;
-    }
-
     currentChapter += direction;
-    if (currentChapter < 1) {
-        currentChapter = 1;
-    }
+    if (currentChapter < 1) currentChapter = 1;
     updateUI();
 }
 
-// تشغيل الواجهة المبدئية عند الفتح
+// عند ضغط زر "تحديث" يدويًا
+function loadNewBaseUrl() {
+    let inputUrl = document.getElementById("url-input").value;
+    parseUrl(inputUrl);
+}
+
+// دالة جلب وعرض الصور الحقيقية وتجنب حماية الموقع (CORS)
+function loadMangaImages() {
+    const container = document.getElementById("images-container");
+    container.innerHTML = ""; // تنظيف الصفحة
+
+    // لتجاوز حماية المواقع، سنقوم بتوليد روابط الصور مباشرة من السيرفر الخاص بموقع المانجا المذكور.
+    // عادةً تكون التسمية مرقمة من 1 إلى 60 أو أكثر داخل الفصل.
+    for (let i = 1; i <= 60; i++) {
+        let img = document.createElement("img");
+        
+        // تحويل الرقم إلى صيغة خانتين أو ثلاث خانات إذا كان السيرفر يتطلب ذلك (مثال: 01, 02 أو 001)
+        let pageNum = String(i).padStart(2, '0'); 
+        
+        // هذا هو النمط الشائع لروابط الصور المباشرة المخزنة على سيرفرات المانجا (تعتمد على اسم المانجا ورقم الفصل)
+        // يمكنك تعديل هذا الرابط ليتوافق تماماً مع السيرفر الذي يرفع عليه الموقع الصور
+        img.src = `https://manga-starz.net/wp-content/uploads/manga/${mangaName.toLowerCase().replace(' ', '-')}/chapters/${currentChapter}/${pageNum}.jpg`;
+        
+        img.alt = `صفحة ${i}`;
+
+        // إذا انتهى الفصل ووصلنا لرقم صورة غير موجودة، تختفي الصورة المكسورة تلقائياً وتتوقف الحاوية نظيفة
+        img.onerror = function() {
+            this.remove(); 
+        };
+
+        container.appendChild(img);
+    }
+}
+
+// التشغيل المبدئي الآمن عند فتح الصفحة لأول مرة
 window.onload = function() {
-    updateUI();
+    parseUrl(currentUrl);
 };
