@@ -1,4 +1,3 @@
-/* إعدادات عامة مريحة للعين */
 body {
     margin: 0;
     padding: 0;
@@ -11,7 +10,6 @@ body {
     -webkit-tap-highlight-color: transparent;
 }
 
-/* الشريط العلوي */
 .control-panel {
     width: 100%;
     background-color: #1e1e1e;
@@ -30,7 +28,6 @@ body {
     color: #e0e0e0;
 }
 
-/* حاوية الأزرار */
 .buttons-container {
     display: flex;
     justify-content: space-around;
@@ -48,64 +45,64 @@ button {
     cursor: pointer;
     box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     transition: background 0.2s;
-    width: 45%; /* لتناسب أصابع اليد على الجوال */
+    width: 45%;
 }
 
 button:active {
     background-color: #ff6b81;
 }
 
-/* خانة إدخال الرابط */
-.input-area {
+/* التنسيق الجديد لخانة الروابط المتقدمة */
+.input-area-advanced {
     margin-top: 8px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     gap: 5px;
-    padding: 0 10px;
+    padding: 0 15px;
 }
 
-.input-area input {
-    width: 70%;
+.input-area-advanced textarea {
+    width: 90%;
     background-color: #2e2e2e;
     border: 1px solid #444;
     color: white;
-    padding: 5px 10px;
+    padding: 8px;
     border-radius: 5px;
     font-size: 0.8rem;
+    resize: none;
 }
 
-.input-area button {
-    width: 25%;
-    padding: 5px;
+.input-area-advanced button {
+    width: 94%;
+    padding: 6px;
     background-color: #2ed573;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
 }
 
-/* حاوية الصور المانجا الأساسية */
 .viewer-container {
-    margin-top: 130px; /* مسافة لكي لا تغطي الأزرار العلوية أول الصور */
-    margin-bottom: 70px; /* مسافة للأزرار السفلية */
+    margin-top: 170px; /* زيادة المسافة لتناسب الصندوق الجديد */
+    margin-bottom: 70px;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-/* تنسيق الصور لتكون كاملة العرض وعمودية */
 .viewer-container img {
-    width: 100%; /* ملء الأفقي تماماً */
-    height: auto; /* الحفاظ على أبعاد الصورة الأصلية */
-    display: block; /* منع الفراغات بين الصور */
-    loading: lazy; /* تسريع التحميل الفصول */
+    width: 100%;
+    height: auto;
+    display: block;
 }
 
 .notice {
     color: #888;
     text-align: center;
-    margin-top: 50px;
+    margin: 50px 20px;
+    font-size: 0.9rem;
+    line-height: 1.5;
 }
 
-/* الشريط السفلي */
 .bottom-panel {
     position: fixed;
     bottom: 0;
